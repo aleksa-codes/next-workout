@@ -12,7 +12,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
   WandSparkles,
-  Brain,
   CopyCheck,
   ExternalLink,
   Dumbbell,
@@ -20,6 +19,8 @@ import {
   AlertTriangle,
   Trophy,
   Target,
+  Youtube,
+  ChevronRight,
 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -238,11 +239,11 @@ IMPORTANT: Your entire response must contain only the JSON above with no other t
   }
 
   const encodedPrompt = encodeURIComponent(generatedPrompt || '');
-  const chatGptUrl = `https://chat.openai.com/?model=gpt-4&q=${encodedPrompt}`;
+  const chatGptUrl = `https://chat.openai.com/?model=gpt-4o-mini&q=${encodedPrompt}&temporary-chat=true`;
 
   return (
     <div className='mx-auto max-w-4xl'>
-      {/* Step indicators with improved styling */}
+      {/* Step indicators with improved styling */}z
       <div className='relative mb-10'>
         <div className='bg-muted/70 absolute top-4 right-[11%] left-[11%] -z-10 h-0.5'></div>
         <div className='flex justify-between'>
@@ -266,7 +267,6 @@ IMPORTANT: Your entire response must contain only the JSON above with no other t
           ))}
         </div>
       </div>
-
       <Card className='border-primary/10 from-card to-background border bg-gradient-to-br shadow-md'>
         {currentStep === 1 && (
           <>
@@ -529,7 +529,7 @@ IMPORTANT: Your entire response must contain only the JSON above with no other t
               {currentStep < 3 && (
                 <Alert variant='default' className='bg-primary/5 border-primary/20'>
                   <AlertDescription className='flex items-start gap-3'>
-                    <Brain className='text-primary mt-0.5 h-5 w-5 shrink-0' />
+                    <ChevronRight className='text-primary mt-0.5 h-5 w-5 shrink-0' />
                     <div className='space-y-2'>
                       <p>Follow these simple steps:</p>
                       <ol className='ml-5 list-decimal space-y-1 text-sm'>
@@ -558,7 +558,7 @@ IMPORTANT: Your entire response must contain only the JSON above with no other t
                         toast.success('Copied to clipboard');
                       }}
                     >
-                      <CopyCheck className='mr-1.5 h-3.5 w-3.5' />
+                      <CopyCheck className='h-3.5 w-3.5' />
                       Copy Prompt
                     </Button>
                     <Button
@@ -566,7 +566,7 @@ IMPORTANT: Your entire response must contain only the JSON above with no other t
                       className='h-8 rounded-full shadow-sm'
                       onClick={() => window.open(chatGptUrl, '_blank')}
                     >
-                      <ExternalLink className='mr-1.5 h-3.5 w-3.5' />
+                      <ExternalLink className='h-3.5 w-3.5' />
                       Open in ChatGPT
                     </Button>
                   </div>
@@ -604,7 +604,7 @@ IMPORTANT: Your entire response must contain only the JSON above with no other t
                           <span className='animate-pulse'>Validating...</span>
                         ) : (
                           <>
-                            <Dumbbell className='mr-1.5 h-4 w-4' />
+                            <Dumbbell className='h-4 w-4' />
                             Save Workout
                           </>
                         )}
@@ -615,11 +615,47 @@ IMPORTANT: Your entire response must contain only the JSON above with no other t
               )}
 
               {currentStep === 3 && (
-                <div className='flex flex-col items-center py-12'>
+                <div className='flex flex-col items-center'>
                   <div className='bg-primary/10 mb-6 rounded-full p-5'>
                     <Trophy className='text-primary h-10 w-10' />
                   </div>
-                  <p className='mb-8 text-center text-lg'>Your workout has been created and saved successfully!</p>
+                  <p className='mb-4 text-center text-lg'>Your workout has been created and saved successfully!</p>
+
+                  {/* Move the video tips box here */}
+                  <Alert variant='default' className='mb-6 max-w-xl border-amber-200 bg-amber-50/50'>
+                    <AlertDescription className='flex items-start gap-3'>
+                      <Youtube className='mt-0.5 h-5 w-5 shrink-0 text-amber-600' />
+                      <div className='space-y-2 text-amber-800'>
+                        <p className='font-medium'>About Exercise Videos</p>
+                        <p className='text-sm'>
+                          You might want to customize the exercise videos later. AI-selected videos vary in quality, but
+                          the best workout experience comes from short (20-30s) demonstrations that clearly show proper
+                          form.
+                        </p>
+                        <p className='mt-1 text-xs'>
+                          <strong>Recommended channels:</strong>{' '}
+                          <a
+                            href='https://www.youtube.com/@FunctionalBodybuilding'
+                            target='_blank'
+                            rel='noreferrer'
+                            className='text-amber-700 underline hover:text-amber-800'
+                          >
+                            Functional Bodybuilding
+                          </a>
+                          ,{' '}
+                          <a
+                            href='https://www.youtube.com/@OPEXFitness'
+                            target='_blank'
+                            rel='noreferrer'
+                            className='text-amber-700 underline hover:text-amber-800'
+                          >
+                            OPEX Fitness
+                          </a>
+                        </p>
+                      </div>
+                    </AlertDescription>
+                  </Alert>
+
                   <Button asChild className='rounded-full px-10 py-6 shadow-md'>
                     <Link href='/'>View My Workouts</Link>
                   </Button>

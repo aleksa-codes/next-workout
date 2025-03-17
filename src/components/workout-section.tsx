@@ -128,9 +128,11 @@ export function WorkoutSection() {
                     {/* Middle: Title and description */}
                     <div className='flex flex-1 flex-col'>
                       <div className='mb-4'>
-                        <h3 className='group-hover:text-primary mb-2 text-xl font-semibold transition-colors'>
-                          {workout.title}
-                        </h3>
+                        <Link href={`/workout/${workout.id}`} className='block'>
+                          <h3 className='group-hover:text-primary hover:text-primary mb-2 text-xl font-semibold transition-colors'>
+                            {workout.title}
+                          </h3>
+                        </Link>
                         <p className='text-muted-foreground text-sm'>{workout.description}</p>
                       </div>
 

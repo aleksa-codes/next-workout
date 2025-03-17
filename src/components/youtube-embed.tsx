@@ -75,7 +75,7 @@ export default function YouTubeEmbed({
         id={id}
         title='YouTube video player'
         noCookie={true}
-        params={playlistParam ? `loop=1${playlistParam.replace('&playlist=', '&playlist=')}` : ''}
+        params={playlistParam ? `loop=1${playlistParam}` : ''}
         webp={webp}
       />
     </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { WorkoutPlan, workouts as defaultWorkouts } from '@/data/workouts';
 import { toast } from 'sonner';
 
@@ -32,6 +32,28 @@ export function useWorkouts() {
     };
 
     loadWorkouts();
+  }, []);
+
+  // Memoize the getWorkoutById function with useCallback
+  const getWorkoutById = useCallback((id: string): WorkoutPlan | undefined => {
+    // First check default workouts
+    const defaultWorkout = defaultWorkouts.find((workout) => workout.id === id);
+    if (defaultWorkout) return defaultWorkout;
+
+    // If not found, check local storage for custom workouts
+    if (typeof window !== 'undefined') {
+      try {
+        const customWorkoutsJSON = localStorage.getItem('customWorkouts');
+        if (customWorkoutsJSON) {
+          const customWorkouts: WorkoutPlan[] = JSON.parse(customWorkoutsJSON);
+          return customWorkouts.find((workout) => workout.id === id);
+        }
+      } catch (error) {
+        console.error('Error retrieving custom workouts:', error);
+      }
+    }
+
+    return undefined;
   }, []);
 
   const deleteWorkout = (id: string) => {
@@ -70,5 +92,6 @@ export function useWorkouts() {
     workouts,
     isLoading,
     deleteWorkout,
+    getWorkoutById,
   };
 }

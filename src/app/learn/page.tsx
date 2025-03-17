@@ -253,7 +253,7 @@ export default function LearnMore() {
                 <Link href='/#workouts'>Browse Workouts</Link>
               </Button>
               <Button size='lg' variant='outline' asChild className='rounded-full px-8'>
-                <Link href='/create'>Create Custom Workout</Link>
+                <Link href='/create'>Create Workout</Link>
               </Button>
             </div>
           </div>

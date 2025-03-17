@@ -1,15 +1,16 @@
 'use client';
 
-import { getWorkoutById } from '@/data/workouts';
 import WorkoutClient from '@/app/workout/workout-client';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
 import { useParams } from 'next/navigation';
+import { useWorkouts } from '@/hooks/use-workouts';
 
 export default function WorkoutStartPage() {
   const params = useParams<{ id: string }>();
+  const { getWorkoutById } = useWorkouts();
   const workout = getWorkoutById(params.id);
 
   if (!workout) {

@@ -10,13 +10,10 @@ import {
   Pause,
   SkipForward,
   RefreshCw,
-  Clock,
-  Dumbbell,
   Target,
   Award,
   Check,
   Repeat,
-  Hash,
   BicepsFlexed,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -33,6 +30,20 @@ const ZYZZ_VIDEOS = [
   '5OZ-JOSWx1Q', // Tevvez - Legend Ψ - First video (main video)
   'QGl-oFys0_E', // Tevvez - Frozen in Time
   'T4MgmEc_rs4', // Zyzz "Legend" 2021 Playlist
+];
+
+// Add Zyzz Legacy video ID for tribute screen
+const ZYZZ_LEGACY_VIDEO = 'AdBoybKnzZw'; // Zyzz - The Legacy
+
+// Zyzz quotes for the tribute screen
+const ZYZZ_QUOTES = [
+  "We're all gonna make it brah.",
+  "Don't wait for the perfect moment. Take the moment and make it perfect.",
+  'You have the same amount of hours in a day as me.',
+  'A true aesthetics champion comes from within.',
+  'Stop being a sad c*nt, and start being a sick c*nt.',
+  'Disregard females, acquire aesthetics.',
+  'You mirin brah?',
 ];
 
 interface WorkoutSessionProps {
@@ -126,13 +137,31 @@ export default function WorkoutSession({ workout, config, onRestart }: WorkoutSe
   // Add effect to fire confetti on workout complete
   useEffect(() => {
     if (workoutState === 'complete') {
-      confetti({
-        particleCount: 150,
-        spread: 100,
-        origin: { x: 0.5, y: 0.5 },
-      });
+      if (config.zyzzMode) {
+        // Custom Zyzz-themed confetti with emojis
+        const emojis = ['⚡', '💪', '🏛️', '😎', '🦾', '🏋️', '👑'];
+        const emojiShapes = emojis.map((emoji) =>
+          confetti.shapeFromText({ text: emoji, scalar: 3, color: '#FFD700', fontFamily: 'Arial' }),
+        );
+
+        // Fire confetti using emoji shapes
+        confetti({
+          particleCount: 150,
+          spread: 120,
+          origin: { x: 0.5, y: 0.5 },
+          shapes: emojiShapes,
+          scalar: 3,
+        });
+      } else {
+        // Regular confetti for normal mode
+        confetti({
+          particleCount: 150,
+          spread: 100,
+          origin: { x: 0.5, y: 0.5 },
+        });
+      }
     }
-  }, [workoutState]);
+  }, [workoutState, config.zyzzMode]);
 
   // Function to advance state when active rep's timer ends.
   const advanceActive = useCallback(() => {
@@ -150,7 +179,20 @@ export default function WorkoutSession({ workout, config, onRestart }: WorkoutSe
       const indices = getSelectedIndices();
       const curIndex = indices.indexOf(currentExercise);
 
-      // Play rest sound when entering rest period
+      // Check if this is the final exercise in the final round
+      const isLastExerciseLastRound =
+        (config.workoutMode === 'straight-sets' && currentRound >= config.rounds && curIndex >= indices.length - 1) ||
+        (config.workoutMode === 'circuit' && currentRound >= config.rounds && curIndex >= indices.length - 1);
+
+      // If it's the last exercise+round, complete the workout without playing rest audio
+      if (isLastExerciseLastRound) {
+        // Only play done sound when workout completes
+        audioRefs.current.done?.play().catch((e) => console.error('Error playing done sound:', e));
+        setWorkoutState('complete');
+        return;
+      }
+
+      // Not the last set, so play rest sound when entering rest period
       audioRefs.current.rest?.play().catch((e) => console.error('Error playing rest sound:', e));
 
       if (config.workoutMode === 'straight-sets') {
@@ -246,6 +288,85 @@ export default function WorkoutSession({ workout, config, onRestart }: WorkoutSe
 
   // Display complete workout state
   if (workoutState === 'complete') {
+    // Special Zyzz tribute screen when in Zyzz mode
+    if (config.zyzzMode) {
+      // Pick a random Zyzz quote
+      const randomQuote = ZYZZ_QUOTES[Math.floor(Math.random() * ZYZZ_QUOTES.length)];
+
+      return (
+        <Card className='to-background overflow-hidden border border-amber-500/30 bg-gradient-to-b from-amber-50/30 shadow-lg'>
+          <CardHeader className='relative z-10'>
+            <div className='flex items-center justify-between'>
+              <CardTitle className='text-2xl font-semibold tracking-tight'>Aesthetic Achievement Unlocked 🔱</CardTitle>
+              <Badge variant='outline' className='border-amber-500/30 bg-amber-500/10 text-amber-800'>
+                <BicepsFlexed className='mr-1 h-3.5 w-3.5' />
+                Zyzz Mode
+              </Badge>
+            </div>
+            <CardDescription>In memory of Aziz &quot;Zyzz&quot; Shavershian (1989-2011)</CardDescription>
+          </CardHeader>
+
+          <CardContent className='relative z-10'>
+            <div className='flex flex-col items-center justify-center'>
+              {/* Embedded tribute video */}
+              <div className='mb-6 w-full overflow-hidden rounded-lg shadow-lg'>
+                <YouTubeEmbed
+                  videoId={ZYZZ_LEGACY_VIDEO}
+                  activePlayback={true}
+                  playbackActive={true}
+                  loop={false}
+                  muted={false}
+                  autoPlay={true}
+                  className='aspect-video'
+                />
+              </div>
+
+              <div className='mb-6 text-center'>
+                <p className='mb-2 text-xl font-semibold text-amber-800'>&quot;{randomQuote}&quot;</p>
+                <p className='text-sm text-amber-700/70 italic'>- Zyzz</p>
+              </div>
+
+              <div className='grid w-full grid-cols-3 gap-3'>
+                <div className='rounded-xl border border-amber-200/30 bg-amber-50/50 p-3 text-center'>
+                  <p className='mb-1 text-xs text-amber-700'>Rounds</p>
+                  <p className='text-xl font-bold text-amber-900'>{config.rounds}</p>
+                </div>
+
+                <div className='rounded-xl border border-amber-200/30 bg-amber-50/50 p-3 text-center'>
+                  <p className='mb-1 text-xs text-amber-700'>Exercises</p>
+                  <p className='text-xl font-bold text-amber-900'>{config.selectedExercises.length}</p>
+                </div>
+
+                <div className='rounded-xl border border-amber-200/30 bg-amber-50/50 p-3 text-center'>
+                  <p className='mb-1 text-xs text-amber-700'>Total Reps</p>
+                  <p className='text-xl font-bold text-amber-900'>
+                    {config.rounds * config.selectedExercises.length * config.repsPerExercise}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+
+          <CardFooter className='relative z-10 flex justify-between gap-4'>
+            <Button variant='outline' asChild className='flex-1 rounded-full border-amber-200 hover:bg-amber-50/50'>
+              <Link href='/'>
+                <ChevronLeft className='mr-2 h-4 w-4' />
+                Home
+              </Link>
+            </Button>
+            <Button
+              onClick={onRestart}
+              className='flex-1 rounded-full bg-amber-500 text-white transition-transform hover:scale-105 hover:bg-amber-600 active:scale-95'
+            >
+              <RefreshCw className='mr-2 h-4 w-4' />
+              New Workout
+            </Button>
+          </CardFooter>
+        </Card>
+      );
+    }
+
+    // Regular completion screen
     return (
       <Card className='border-primary/30 overflow-hidden border shadow-lg'>
         <CardHeader className='relative z-10'>
@@ -321,7 +442,19 @@ export default function WorkoutSession({ workout, config, onRestart }: WorkoutSe
   }
 
   // Render active workout or rest session
-  const currentExerciseData = workout.exercises[currentExercise];
+  // Calculate the current exercise data with proper handling
+  const selectedExerciseIndices = workout.exercises
+    .map((ex, i) => (config.selectedExercises.includes(ex.name) ? i : -1))
+    .filter((i) => i !== -1);
+
+  // Get the first selected exercise for initial display
+  const firstSelectedExerciseIndex = selectedExerciseIndices[0] || 0;
+
+  // Current exercise should only be used after initialization
+  const currentExerciseData = isReady
+    ? workout.exercises[currentExercise]
+    : workout.exercises[firstSelectedExerciseIndex];
+
   if (!currentExerciseData) return <div>Loading...</div>;
 
   const isResting = workoutState === 'rest';
@@ -329,10 +462,6 @@ export default function WorkoutSession({ workout, config, onRestart }: WorkoutSe
   const progressValue = timeRemaining;
   const adjustedRepsForCurrentExercise = getAdjustedReps();
 
-  // Calculate total progress - Updated for accuracy with different workout modes
-  const selectedExerciseIndices = workout.exercises
-    .map((ex, i) => (config.selectedExercises.includes(ex.name) ? i : -1))
-    .filter((i) => i !== -1);
   const totalExercises = selectedExerciseIndices.length;
   const totalReps = config.rounds * totalExercises * config.repsPerExercise;
 
@@ -397,17 +526,6 @@ export default function WorkoutSession({ workout, config, onRestart }: WorkoutSe
     }
   }
 
-  // Determine which video to show - For Zyzz mode, use the main video with a playlist parameter
-  // const videoConfig = config.zyzzMode
-  //   ? {
-  //       videoId: ZYZZ_VIDEOS[0],
-  //       playlist: ZYZZ_VIDEOS.join(','),
-  //     }
-  //   : {
-  //       videoId: currentExerciseData.videoUrls[0],
-  //       playlist: '',
-  //     };
-
   return (
     <Card
       className={cn(
@@ -429,7 +547,7 @@ export default function WorkoutSession({ workout, config, onRestart }: WorkoutSe
       <CardContent className='relative z-10 space-y-8 px-4'>
         {/* Video section - Show both workout video and Zyzz video when in Zyzz mode */}
         <div className='relative'>
-          {/* Always display the main exercise video */}
+          {/* Display the correct exercise video based on initialization state */}
           <YouTubeEmbed
             videoId={currentExerciseData.videoUrls[0]}
             activePlayback={true}
@@ -471,7 +589,10 @@ export default function WorkoutSession({ workout, config, onRestart }: WorkoutSe
         </div>
 
         <div className='flex flex-col items-center justify-center gap-1.5'>
-          <div className='text-xl font-extrabold'>{isResting ? 'Rest Time' : currentExerciseData.name}</div>
+          {/* During countdown, display which exercise you're about to start */}
+          <div className='text-2xl font-extrabold'>
+            {!isReady ? `Preparing: ${currentExerciseData.name}` : isResting ? 'Rest Time' : currentExerciseData.name}
+          </div>
 
           {/* Muscles or preview info directly under title */}
           {isResting ? (
@@ -508,18 +629,17 @@ export default function WorkoutSession({ workout, config, onRestart }: WorkoutSe
             </div>
           )}
         </div>
-
         {/* Timer section with exercise/set badges on sides */}
-        <div className='flex w-full items-center justify-center gap-4'>
-          {/* Exercise badge on left */}
+
+        <div className='flex w-full items-center justify-center gap-8'>
+          {/* Set/Round badge on left */}
           {isReady && (
             <div className='flex flex-col items-center'>
-              <span className='text-muted-foreground mt-1 text-xs'>Exercise</span>
-              <Badge variant='outline' className='px-3 py-1'>
-                <Hash className='mr-1 h-3.5 w-3.5' />
-                <span>
-                  {currentExerciseIndex + 1}/{totalExercises}
-                </span>
+              <span className='text-muted-foreground mb-1 text-xs'>
+                {config.workoutMode === 'straight-sets' ? 'Set' : 'Round'}
+              </span>
+              <Badge variant='outline' className='border-primary/30 bg-primary/5 w-14 py-1.5 text-base font-medium'>
+                {currentRound}/{config.rounds}
               </Badge>
             </div>
           )}
@@ -556,8 +676,8 @@ export default function WorkoutSession({ workout, config, onRestart }: WorkoutSe
                   <span className='text-muted-foreground text-xs'>sec</span>
 
                   {!isResting && (
-                    <div className='bg-primary/10 mt-2 flex w-14 items-center justify-center rounded-full py-0.5'>
-                      <span className='text-xs font-medium'>
+                    <div className='bg-primary/10 mt-2 flex w-16 items-center justify-center rounded-full py-1'>
+                      <span className='text-sm font-medium'>
                         {currentRep}/{adjustedRepsForCurrentExercise}
                       </span>
                     </div>
@@ -567,17 +687,11 @@ export default function WorkoutSession({ workout, config, onRestart }: WorkoutSe
             )}
           </div>
 
-          {/* Set/Round badge on right */}
           {isReady && (
             <div className='flex flex-col items-center'>
-              <span className='text-muted-foreground mt-1 text-xs'>
-                {config.workoutMode === 'straight-sets' ? 'Set' : 'Round'}
-              </span>
-              <Badge variant='outline' className='px-3 py-1'>
-                {isResting ? <Clock className='mr-1 h-3.5 w-3.5' /> : <Dumbbell className='mr-1 h-3.5 w-3.5' />}
-                <span>
-                  {currentRound}/{config.rounds}
-                </span>
+              <span className='text-muted-foreground mb-1 text-xs'>Exercise</span>
+              <Badge variant='outline' className='border-primary/30 bg-primary/5 w-14 py-1.5 text-base font-medium'>
+                {currentExerciseIndex + 1}/{totalExercises}
               </Badge>
             </div>
           )}
