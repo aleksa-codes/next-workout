@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Next Workout',
-  description: 'Workout app to help you stay fit and healthy',
+  description: 'AI-powered workout app to help you achieve your fitness goals',
 };
 
 export default function RootLayout({

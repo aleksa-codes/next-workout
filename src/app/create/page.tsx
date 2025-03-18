@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Create Custom Workout | Next Workout',
+  title: 'Create Workout | Next Workout',
   description: 'Generate your own custom workout plan with AI assistance',
 };
 

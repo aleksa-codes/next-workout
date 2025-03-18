@@ -18,9 +18,9 @@ import {
   Sparkles,
   AlertTriangle,
   Trophy,
-  Target,
   Youtube,
   ChevronRight,
+  BicepsFlexed,
 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -243,7 +243,7 @@ IMPORTANT: Your entire response must contain only the JSON above with no other t
 
   return (
     <div className='mx-auto max-w-4xl'>
-      {/* Step indicators with improved styling */}z
+      {/* Step indicators with improved styling */}
       <div className='relative mb-10'>
         <div className='bg-muted/70 absolute top-4 right-[11%] left-[11%] -z-10 h-0.5'></div>
         <div className='flex justify-between'>
@@ -281,7 +281,7 @@ IMPORTANT: Your entire response must contain only the JSON above with no other t
 
             <CardContent>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+                <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
                   {/* Basic details section - Improved layout */}
                   <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
                     <div className='space-y-6'>
@@ -291,7 +291,7 @@ IMPORTANT: Your entire response must contain only the JSON above with no other t
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>
-                              Workout Title <span className='text-muted-foreground text-xs'>(Optional)</span>
+                              Workout Title <span className='text-muted-foreground'>(Optional)</span>
                             </FormLabel>
                             <FormControl>
                               <Input placeholder='E.g., Quick Morning HIIT' {...field} />
@@ -307,7 +307,7 @@ IMPORTANT: Your entire response must contain only the JSON above with no other t
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>
-                              Workout Description <span className='text-muted-foreground text-xs'>(Optional)</span>
+                              Workout Description <span className='text-muted-foreground'>(Optional)</span>
                             </FormLabel>
                             <FormControl>
                               <Textarea
@@ -323,7 +323,7 @@ IMPORTANT: Your entire response must contain only the JSON above with no other t
                       />
                     </div>
 
-                    <div className='space-y-6'>
+                    <div className='space-y-6 md:space-y-12'>
                       <FormField
                         control={form.control}
                         name='duration'
@@ -351,7 +351,7 @@ IMPORTANT: Your entire response must contain only the JSON above with no other t
                         control={form.control}
                         name='fitnessLevel'
                         render={({ field }) => (
-                          <FormItem className='space-y-2'>
+                          <FormItem>
                             <FormLabel>Fitness Level</FormLabel>
                             <FormControl>
                               <RadioGroup
@@ -359,7 +359,7 @@ IMPORTANT: Your entire response must contain only the JSON above with no other t
                                 defaultValue={field.value}
                                 className='flex flex-wrap gap-3'
                               >
-                                <FormItem className='flex items-center space-y-0'>
+                                <FormItem className='flex items-center'>
                                   <FormControl>
                                     <RadioGroupItem value='beginner' id='beginner' className='peer sr-only' />
                                   </FormControl>
@@ -405,8 +405,8 @@ IMPORTANT: Your entire response must contain only the JSON above with no other t
                     {/* Equipment section */}
                     <div>
                       <h3 className='mb-4 flex items-center gap-2 text-sm font-medium'>
-                        <span className='bg-primary/10 flex h-5 w-5 items-center justify-center rounded-full'>
-                          <Dumbbell className='text-primary h-3 w-3' />
+                        <span className='bg-primary/10 flex size-6 items-center justify-center rounded-full'>
+                          <Dumbbell className='text-primary size-4' />
                         </span>
                         Available Equipment
                       </h3>
@@ -441,8 +441,8 @@ IMPORTANT: Your entire response must contain only the JSON above with no other t
                     {/* Muscle groups section */}
                     <div>
                       <h3 className='mb-4 flex items-center gap-2 text-sm font-medium'>
-                        <span className='bg-primary/10 flex h-5 w-5 items-center justify-center rounded-full'>
-                          <Target className='text-primary h-3 w-3' />
+                        <span className='bg-primary/10 flex size-6 items-center justify-center rounded-full'>
+                          <BicepsFlexed className='text-primary size-4' />
                         </span>
                         Target Muscle Groups
                       </h3>
@@ -483,7 +483,7 @@ IMPORTANT: Your entire response must contain only the JSON above with no other t
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className='text-sm font-medium'>
-                            Additional Notes <span className='text-muted-foreground text-xs'>(Optional)</span>
+                            Additional Notes <span className='text-muted-foreground'>(Optional)</span>
                           </FormLabel>
                           <FormControl>
                             <Textarea
@@ -496,11 +496,8 @@ IMPORTANT: Your entire response must contain only the JSON above with no other t
                         </FormItem>
                       )}
                     />
-                  </div>
-
-                  <div className='flex justify-center pt-2'>
-                    <Button type='submit' className='rounded-full px-8 py-6 shadow-md'>
-                      <WandSparkles className='mr-1.5 h-4 w-4' />
+                    <Button type='submit' className='mt-4 w-full rounded-full shadow-md'>
+                      <WandSparkles className='h-4 w-4' />
                       Create Workout
                     </Button>
                   </div>
@@ -596,7 +593,7 @@ IMPORTANT: Your entire response must contain only the JSON above with no other t
 
                     <div className='mt-4'>
                       <Button
-                        className='w-full rounded-full py-6 shadow-md'
+                        className='w-full rounded-full shadow-md'
                         disabled={!importedWorkout.trim() || isValidating}
                         onClick={handleImportWorkout}
                       >

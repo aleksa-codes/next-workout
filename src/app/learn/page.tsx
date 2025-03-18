@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { Badge } from '@/components/ui/badge';
 import {
   BicepsFlexed,
@@ -15,6 +16,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Learn | Next Workout',
+  description: 'Discover how Next Workout can help you achieve your fitness goals with personalized workouts',
+};
 
 export default function LearnMore() {
   return (
