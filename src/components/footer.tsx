@@ -17,7 +17,13 @@ export const Footer = () => (
 
         <div className='flex flex-col items-center gap-4 sm:items-end'>
           <div className='flex gap-4'>
-            <a href='#' className='text-muted-foreground hover:text-primary transition-colors' aria-label='GitHub'>
+            <a
+              href='https://github.com/aleksa-codes/next-workout'
+              className='text-muted-foreground hover:text-primary transition-colors'
+              aria-label='GitHub'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
               <Github className='h-5 w-5' />
             </a>
           </div>
