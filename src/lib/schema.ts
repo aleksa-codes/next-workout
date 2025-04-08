@@ -11,7 +11,7 @@ export const workoutConfigSchema = z.object({
   restPeriod: z.number().min(5).max(120),
   timePerRep: z.number().min(1).max(60),
   workoutMode: z.enum(['straight-sets', 'circuit']),
-  zyzzMode: z.boolean().default(false), // Add Zyzz mode setting
+  zyzzMode: z.boolean(), // Add Zyzz mode setting
 });
 
 export type WorkoutConfig = z.infer<typeof workoutConfigSchema>;
