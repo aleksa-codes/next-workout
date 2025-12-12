@@ -14,9 +14,7 @@ export const workoutPlanSchema = z.object({
   id: z.string().min(1, 'Workout ID is required'),
   title: z.string().min(1, 'Title is required'),
   description: z.string().min(1, 'Description is required'),
-  level: z.enum(['beginner', 'intermediate', 'advanced'], {
-    errorMap: () => ({ message: 'Level must be beginner, intermediate, or advanced' }),
-  }),
+  level: z.enum(['beginner', 'intermediate', 'advanced'], 'Level must be beginner, intermediate, or advanced'),
   duration: z.string().min(1, 'Duration is required'),
   instructions: z.object({
     rounds: z.string().min(1, 'Rounds information is required'),

@@ -10,7 +10,8 @@ export default function WorkoutClient({ workout }: { workout: WorkoutPlan }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   function handleConfigSubmit(data: WorkoutConfig) {

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { WorkoutPlan } from '@/data/workouts';
 import { WorkoutConfig } from '@/lib/schema';
 import { Button } from '@/components/ui/button';
@@ -62,6 +62,7 @@ export default function WorkoutSession({ workout, config, onRestart }: WorkoutSe
   const [isPaused, setIsPaused] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [hasStartedRep, setHasStartedRep] = useState(false);
+  const [randomQuote, setRandomQuote] = useState<string>('');
   const audioRefs = useRef<{
     alert: HTMLAudioElement | null;
     start: HTMLAudioElement | null;
@@ -125,13 +126,15 @@ export default function WorkoutSession({ workout, config, onRestart }: WorkoutSe
   // Initialize state once ready
   useEffect(() => {
     if (!isReady) return;
-    setCurrentExercise(getSelectedIndices()[0] || 0);
-    setWorkoutState('active');
-    setTimeRemaining(config.timePerRep);
-    setCurrentRound(1);
-    setCurrentRep(1);
-    setIsPaused(false);
-    setHasStartedRep(false);
+    setTimeout(() => {
+      setCurrentExercise(getSelectedIndices()[0] || 0);
+      setWorkoutState('active');
+      setTimeRemaining(config.timePerRep);
+      setCurrentRound(1);
+      setCurrentRep(1);
+      setIsPaused(false);
+      setHasStartedRep(false);
+    }, 0);
   }, [isReady, config, workout.exercises, getSelectedIndices]);
 
   // Add effect to fire confetti on workout complete
@@ -269,6 +272,13 @@ export default function WorkoutSession({ workout, config, onRestart }: WorkoutSe
     }
   }, [isReady, workoutState, timeRemaining, isPaused, advanceActive, resumeActive]);
 
+  // Set random quote for Zyzz mode completion
+  useEffect(() => {
+    if (workoutState === 'complete' && config.zyzzMode && !randomQuote) {
+      setTimeout(() => setRandomQuote(ZYZZ_QUOTES[Math.floor(Math.random() * ZYZZ_QUOTES.length)]), 0);
+    }
+  }, [workoutState, config.zyzzMode, randomQuote]);
+
   function togglePause() {
     setIsPaused(!isPaused);
   }
@@ -290,9 +300,7 @@ export default function WorkoutSession({ workout, config, onRestart }: WorkoutSe
   if (workoutState === 'complete') {
     // Special Zyzz tribute screen when in Zyzz mode
     if (config.zyzzMode) {
-      // Pick a random Zyzz quote
-      const randomQuote = ZYZZ_QUOTES[Math.floor(Math.random() * ZYZZ_QUOTES.length)];
-
+      // Use the random Zyzz quote set on completion
       return (
         <Card className='to-background overflow-hidden border border-amber-500/30 bg-gradient-to-b from-amber-50/30 shadow-lg'>
           <CardHeader className='relative z-10'>
